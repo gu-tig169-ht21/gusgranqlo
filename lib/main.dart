@@ -1,115 +1,195 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'second_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+      // här sätter du upp providern
+      //och gör att
+      //alla barn har tillgång till klassen TodoList
+      ChangeNotifierProvider(
+    create: (context) => TodoList(),
+    child: MyApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Todo {
+  final String syssla;
+  final bool kryssbox;
+  //konstruktor
+  Todo(this.syssla, this.kryssbox);
+}
 
-  // This widget is the root of your application.
-  @override
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+  @override //för att kunna överlagra och göra min egna build funktion
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MainView(),
+      //home: ThirdView(),
+      theme: ThemeData(primarySwatch: Colors.pink),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class TodoList extends ChangeNotifier {
+  List<Todo> _list = [];
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  List<Todo> get list {
+    return _list;
   }
 
-  @override
+  //funktion som adderar en Todo
+  void addTodo(Todo syssla) {
+    _list.add(syssla);
+    notifyListeners();
+  }
+
+  // funktion som raderar en Todo
+  void removeTodo(Todo todo) {
+    _list.remove(todo);
+    notifyListeners();
+  }
+}
+
+class MainView extends StatefulWidget {
+  MainView({Key? key}) : super(key: key);
+  @override //för att kunna överlagra och göra min egna build funktion
+  _MainViewState createState() => _MainViewState();
+}
+
+class _MainViewState extends State<MainView> {
+  late String syssla;
+  late bool kryssbox;
+  late TextEditingController _controller;
+  var filterSetting = 'all';
+
+  get allItems => null;
+
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    List<Todo> list = [];
+
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          centerTitle: true,
+          title: Text('TIG169 TODO'),
+          toolbarHeight: 70,
+          actions: [
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                          child: const Text("Done"),
+                          value: 1,
+                          onTap: () {
+                            getFilteredList(list, "Done");
+                          }),
+                      PopupMenuItem(
+                          child: const Text("All"), value: 2, onTap: () {}),
+                      PopupMenuItem(
+                        child: const Text("Undone"),
+                        value: 3,
+                        onTap: () {
+                          getFilteredList(list, 'Undone');
+                        },
+                      )
+                    ])
+          ]),
+      body: Consumer<TodoList>(
+        //Consumer som uppdateras när de ska lägas till et objekt i listan
+        builder: (context, state, child) => _list(
+          getFilteredList(state.list, filterSetting),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          tooltip: 'Add',
+          child: Icon(Icons.add),
+          backgroundColor: Colors.pink,
+          onPressed: () async {
+            var newTodo = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SecondView(
+                  Todo('', false),
+                ),
+              ),
+            );
+            if (newTodo != null) {
+              //inte är null så skall detta göras
+              Provider.of<TodoList>(context, listen: false).addTodo(newTodo);
+            }
+          }),
     );
   }
+}
+
+List getFilteredList(allItems, settings) {
+  if (settings == "All") return allItems;
+  if (settings == "Done") {
+    return [
+      Todo('Diska', true),
+      Todo('Programmera', true),
+      Todo('Ringa Karolina', true),
+    ];
+  }
+  if (settings == "Undone") {
+    return [
+      Todo('Städa', false),
+      Todo('Laga mat', false),
+      Todo('Gå en runda', false),
+      Todo('Mata hunden', false),
+      Todo('Gå ut med soporna', false)
+    ];
+  }
+  return allItems;
+}
+
+Widget _list(sysslor) {
+  return ListView.builder(
+      itemBuilder: (context, index) => _RadiListan(context, sysslor[index]),
+      itemCount: sysslor.length);
+}
+
+Widget _RadiListan(context, Todo todo) {
+  var textDecoration = TextDecoration.none;
+  if (todo.kryssbox) {
+    textDecoration = TextDecoration.lineThrough;
+  }
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Checkbox(
+          value: todo.kryssbox,
+          onChanged: (Todo) {
+            var state = Provider.of<TodoList>(context, listen: false);
+
+            // state.kryssbox => setState(() = kryssbox!),
+            // setState(() {
+            //   todo.kryssbox[] = newTodo;
+            // },
+            // notifyListeners();
+          }),
+      Expanded(
+        child: Text(
+          todo.syssla,
+          style: TextStyle(
+            fontSize: 20,
+            decoration: textDecoration,
+          ),
+        ),
+      ),
+      IconButton(
+        icon: Icon(Icons.highlight_remove),
+        onPressed: () {
+          var state = Provider.of<TodoList>(context, listen: false);
+          state.removeTodo(todo);
+        },
+      ),
+    ],
+  );
 }
