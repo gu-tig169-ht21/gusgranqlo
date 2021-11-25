@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 // denna klassen skall ta en lista som argument med de
 // sysslorna som skall visas, antigen undone eller done
 
 class ThirdView extends StatefulWidget {
   var list;
-  ThirdView(lista) {
+  ThirdView(lista, {Key? key}) : super(key: key) {
     list = lista;
   }
   @override
@@ -19,6 +19,7 @@ class ThirdView extends StatefulWidget {
 class ThirdViewState extends State<ThirdView> {
   bool isOn = false;
 
+  @override
   Widget build(BuildContext context) {
     Color buttonColor = Colors.red;
     if (isOn) {
@@ -30,20 +31,20 @@ class ThirdViewState extends State<ThirdView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Container(
-              child: TextButton(
-                child: Text(
-                  'Hejsan',
-                  style: TextStyle(color: buttonColor),
-                ),
-                onPressed: () {
-                  setState(() {
-                    isOn = !isOn;
-                  });
-                },
+            //child: Container(
+            child: TextButton(
+              child: Text(
+                'Hejsan',
+                style: TextStyle(color: buttonColor),
               ),
+              onPressed: () {
+                setState(() {
+                  isOn = !isOn;
+                });
+              },
             ),
-          )
+          ),
+          // )
         ],
       ),
     );
