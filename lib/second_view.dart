@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:my_first_app/main.dart';
 //import 'package:provider/provider.dart';
 
@@ -76,7 +76,6 @@ class _SecondViewState extends State<SecondView> {
   Widget _addRow(context) {
     return Container(
       margin: const EdgeInsets.only(left: 20, top: 20),
-      // ignore: deprecated_member_use
       child: RaisedButton.icon(
           onPressed: () {
             if (_controller != '') {

@@ -1,10 +1,7 @@
-//import 'dart:js';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'second_view.dart';
 import 'todo_list.dart';
-//import 'package:http/http.dart'; as http;
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -19,6 +16,14 @@ class Todo {
 
   //konstruktor
   Todo({required this.syssla, this.kryssbox = false});
+
+  Map<String, dynamic> toJson() {
+    return {'syssla': syssla, 'kryssbox': kryssbox};
+  }
+
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(syssla: json['syssla'], kryssbox: json['kryssbox']);
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -50,8 +55,6 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    //List<Todo> list = [];
-
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
