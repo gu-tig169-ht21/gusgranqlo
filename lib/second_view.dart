@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:my_first_app/main.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 class SecondView extends StatefulWidget {
   final Todo kryssbox;
 
   //konstruktor
-  SecondView(this.kryssbox);
+  const SecondView(this.kryssbox, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,16 +21,10 @@ class _SecondViewState extends State<SecondView> {
   late TextEditingController _controller;
 
   _SecondViewState(Todo thing) {
-    this.syssla = thing.syssla;
-    this.kryssbox = thing.kryssbox;
+    syssla = thing.syssla;
+    kryssbox = thing.kryssbox;
 
     _controller = TextEditingController(text: thing.syssla);
-
-    // _controller.addListener(() {
-    //   setState(() {
-    //     syssla = _controller.text;
-    //   });
-    // });
   }
 
   @override
@@ -45,11 +39,12 @@ class _SecondViewState extends State<SecondView> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('TIG169 TODO'),
+        title: const Text('TIG169 TODO'),
         toolbarHeight: 70,
       ),
       body: Center(
@@ -61,12 +56,12 @@ class _SecondViewState extends State<SecondView> {
           ),
           //  _appBar(),
           Container(
-            margin: EdgeInsets.only(left: 20, top: 40),
+            margin: const EdgeInsets.only(left: 20, top: 40),
           ),
           Container(
-            margin: EdgeInsets.only(left: 20, right: 20),
+            margin: const EdgeInsets.only(left: 20, right: 20),
             child: TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'What are you going to do?',
                   border: OutlineInputBorder(),
                 ),
@@ -80,15 +75,15 @@ class _SecondViewState extends State<SecondView> {
 
   Widget _addRow(context) {
     return Container(
-      margin: EdgeInsets.only(left: 20, top: 20),
-      // ignore: deprecated_member_use
+      margin: const EdgeInsets.only(left: 20, top: 20),
       child: RaisedButton.icon(
           onPressed: () {
-            Navigator.pop(context, Todo(_controller.text, false));
-            //här skall de finnas en funktion som sparar
+            if (_controller != '') {
+              Navigator.pop(context, Todo(syssla: _controller.text));
+            } else {}
           },
-          icon: Icon(Icons.add),
-          label: Text('ADD'),
+          icon: const Icon(Icons.add),
+          label: const Text('ADD'),
           color: Colors.pink.shade100),
     );
   }
