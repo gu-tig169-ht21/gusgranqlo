@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'main.dart';
 
 class SecondView extends StatefulWidget {
   final Todo kryssbox;
 
-  //konstruktor
   const SecondView(this.kryssbox, {Key? key}) : super(key: key);
 
   @override

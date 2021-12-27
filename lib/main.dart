@@ -39,13 +39,8 @@ class Todo {
   }
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  @override //för att kunna överlagra och göra min egna build funktion
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,15 +51,8 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MainView extends StatefulWidget {
+class MainView extends StatelessWidget {
   const MainView({Key? key}) : super(key: key);
-  @override //för att kunna överlagra och göra min egna build funktion
-  _MainViewState createState() => _MainViewState();
-}
-
-class _MainViewState extends State<MainView> {
-  late String syssla;
-  late bool kryssbox;
 
   @override
   Widget build(BuildContext context) {

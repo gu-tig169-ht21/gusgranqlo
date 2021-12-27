@@ -8,8 +8,8 @@ class TodoList extends ChangeNotifier {
   }
 
   List<Todo> _list = [];
-
   var _filterBy = 'all';
+
   String get filterBy => _filterBy;
 
   List<Todo> get list {
@@ -36,12 +36,12 @@ class TodoList extends ChangeNotifier {
   //funktion som ändrar state på kryssboxen
   void changeState(Todo todo) async {
     todo.kryssbox = !todo.kryssbox;
-    List<Todo>? _list = await InternetConnection.putTodo(todo);
+    _list = await InternetConnection.putTodo(todo);
     notifyListeners();
   }
 
   void setFilterBy(String filterBy) {
-    this._filterBy = filterBy;
+    _filterBy = filterBy;
     notifyListeners();
   }
 

@@ -6,7 +6,6 @@ String apikey = 'e6dafde2-dc06-4884-9267-eae13f5c0743';
 String url = 'https://todoapp-api-pyq5q.ondigitalocean.app';
 
 class InternetConnection {
-  //hämta ner en lista med todos från internet med GET
   static Future<List<Todo>> getList() async {
     http.Response apisvar = await http.get(Uri.parse('$url/todos?key=$apikey'));
     var list = jsonDecode(apisvar.body);
@@ -16,7 +15,6 @@ class InternetConnection {
     }).toList();
   }
 
-//lägga upp en lista med todos till internet med POST
   static Future<List<Todo>> postTodo(String syssla) async {
     Map<String, dynamic> json = {'title': syssla};
     var body = jsonEncode(json);
@@ -33,7 +31,6 @@ class InternetConnection {
     }).toList();
   }
 
-//ta bort en todos från internet med DELETE
   static Future deleteTodo(Todo todo) async {
     http.Response apisvar =
         await http.delete(Uri.parse('$url/todos/${todo.id}?key=$apikey'));
@@ -46,8 +43,7 @@ class InternetConnection {
     }).toList();
   }
 
-//uppdatera listan
-  static Future<List<Todo>?> putTodo(Todo todo) async {
+  static Future<List<Todo>> putTodo(Todo todo) async {
     Map<String, dynamic> json = {'title': todo.syssla, 'done': todo.kryssbox};
     var body = jsonEncode(json);
     http.Response apisvar = await http.put(
